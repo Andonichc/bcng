@@ -1,0 +1,22 @@
+apply plugin: 'java-library'
+
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api project(":domain")
+
+    implementation libraries.retrofit
+    implementation libraries.retrofitGsonConverter
+    implementation libraries.retrofitRxJavaAdapter
+
+    implementation libraries.okHttpLoggingInterceptor
+
+
+    testImplementation testLibraries.mockito
+    testImplementation testLibraries.jUnit
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
