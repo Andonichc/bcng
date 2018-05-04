@@ -1,25 +1,36 @@
 package com.andonichc.bcng.ui.main
 
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.andonichc.bcng.R
-
+import com.andonichc.bcng.presentation.presenter.main.MainPresenter
+import com.andonichc.bcng.presentation.presenter.main.MainView
+import com.andonichc.bcng.ui.base.BaseActivity
+import com.andonichc.bcng.ui.main.map.MapFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : BaseActivity<MainPresenter>(), MainView, MapFragment.OnFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        fragmentManager.beginTransaction()
+                .add(R.id.mainContainer, MapFragment.createInstance())
+                .commit()
+    }
+
+    override fun initView() {
+
+    }
+
+    override fun showErrorState() {
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -36,5 +47,9 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onFragmentInteraction(uri: Uri) {
+
     }
 }
