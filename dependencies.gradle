@@ -2,6 +2,7 @@ ext {
     //Version
     supportLibrary = '27.1.1'
     constraintLayout = '1.0.2'
+    playServices = '15.0.0'
     dagger = '2.13'
     javaxInject = '1'
     rxJava = '2.1.7'
@@ -31,6 +32,9 @@ ext {
             supportDesign           : "com.android.support:design:$supportLibrary",
             palette                 : "com.android.support:palette-v7:$supportLibrary",
             constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayout",
+
+            //Play Services
+            googleMaps: "com.google.android.gms:play-services-maps:$playServices",
 
             //Dagger
             daggerCompiler          : "com.google.dagger:dagger-compiler:$dagger",
