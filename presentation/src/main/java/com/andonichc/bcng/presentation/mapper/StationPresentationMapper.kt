@@ -13,7 +13,7 @@ class StationPresentationMapper
                     type = from.type,
                     latitude = from.latitude,
                     longitude = from.longitude,
-                    name = "${from.streetName}, ${from.streetNumber}",
+                    name = "${from.id} - ${from.streetName}, ${from.streetNumber}",
                     slots = from.slots.toString(),
                     bikes = from.bikes.toString(),
                     operative = from.operative,
