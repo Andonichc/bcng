@@ -3,6 +3,7 @@ package com.andonichc.bcng.ui.main
 import android.app.Fragment
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.andonichc.bcng.R
@@ -43,18 +44,20 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView, MapFragment.OnFrag
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_change_view -> {
-                changeFragment()
+                changeFragment(item)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun changeFragment() {
+    private fun changeFragment(item: MenuItem) {
         if (currentFragment is MapFragment) {
             setFragment(listFragment)
+            item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_map, null)
         } else {
             setFragment(mapFragment)
+            item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_list, null)
         }
     }
 

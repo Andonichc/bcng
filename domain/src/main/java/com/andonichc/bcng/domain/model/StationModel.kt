@@ -18,4 +18,5 @@ data class StationModel(val id: Int,
                         val slots: Int,
                         val bikes: Int,
                         val operative: Boolean,
-                        val status: Int)
+                        val status: Int,
+                        var distance: Int = -1)

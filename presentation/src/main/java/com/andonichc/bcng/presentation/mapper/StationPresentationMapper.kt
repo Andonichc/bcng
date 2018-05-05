@@ -17,6 +17,17 @@ class StationPresentationMapper
                     slots = from.slots.toString(),
                     bikes = from.bikes.toString(),
                     operative = from.operative,
-                    status = from.status
+                    status = from.status,
+                    distance = mapDistance(from.distance)
             )
+
+    private fun mapDistance(distance: Int): String {
+        if (distance < 0) return ""
+
+        return if (distance / 1000 > 0) {
+            "${distance / 1000}km"
+        } else {
+            "${distance}m"
+        }
+    }
 }

@@ -32,6 +32,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     @Inject
     lateinit var locationChecker: LocationChecker
+
     private var locationManager: LocationManager? = null
 
     private var map: GoogleMap? = null
@@ -121,15 +122,19 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     //region_View
     override fun requestLocationPermission() {
-        locationChecker.check(onSuccess = this::enableLocation)
+        locationChecker.check(onSuccess = this::enableLocation, onError = this::onLocationNotAvailable)
+    }
+
+    private fun onLocationNotAvailable() {
+        presenter.onLocationNotAvailable()
     }
 
     @SuppressLint("MissingPermission")
     override fun centerMapOnMyLocation() {
-        map?.myLocation?.let { centerMap(it.latitude, it.longitude) }
+        map?.myLocation?.let { onLocationUpdated(it.latitude, it.longitude) }
                 ?: locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 1000F, object : LocationListener {
                     override fun onLocationChanged(location: Location?) {
-                        location?.let { centerMap(it.latitude, it.longitude) }
+                        location?.let { onLocationUpdated(it.latitude, it.longitude) }
                         locationManager?.removeUpdates(this)
                     }
 
@@ -139,6 +144,11 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
                     override fun onProviderDisabled(p0: String?) {}
                 })
+    }
+
+    private fun onLocationUpdated(latitude: Double, longitude: Double) {
+        centerMap(latitude, longitude)
+        presenter.setLocation(latitude, longitude)
     }
 
     override fun centerMapInDefaultPosition() {
@@ -170,6 +180,10 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
             bind(station)
             visible()
         }
+    }
+
+    override fun clearMap() {
+        map?.clear()
     }
 
     //endregion_View

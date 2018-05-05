@@ -36,8 +36,9 @@ class StationsAdapter : RecyclerView.Adapter<StationsAdapter.StationViewHolder>(
     }
 
     fun setItems(stations: List<StationPresentationModel>) {
+        items.clear()
         items.addAll(stations)
-        notifyItemRangeInserted(items.size - stations.size, stations.size)
+        notifyDataSetChanged()
 
     }
 

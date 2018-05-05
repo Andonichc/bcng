@@ -34,6 +34,7 @@ class StationDetailView : FrameLayout {
         tvTitle.text = item.name
         tvBikes.text = item.bikes
         tvSlots.text = item.slots
+        tvDistance.text = item.distance
 
         bindType(item.type)
     }
