@@ -2,6 +2,7 @@ package com.andonichc.bcng.ui.base
 
 import android.app.Fragment
 import android.os.Bundle
+import android.view.View
 import com.andonichc.bcng.BcngApplication
 import com.andonichc.bcng.presentation.presenter.base.BasePresenter
 import com.andonichc.bcng.presentation.presenter.base.BaseView
@@ -22,6 +23,10 @@ abstract class BaseFragment<T : BasePresenter> : Fragment(), BaseView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bcngApp?.injector?.inject(this)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        presenter.onCreate()
     }
 
     override fun showErrorState() {

@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.andonichc.bcng.R
 import com.andonichc.bcng.presentation.model.StationPresentationModel
+import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LAT
+import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LON
 import com.andonichc.bcng.presentation.presenter.main.map.MapPresenter
 import com.andonichc.bcng.presentation.presenter.main.map.MapView
 import com.andonichc.bcng.ui.base.BaseFragment
@@ -32,6 +34,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     @Inject
     lateinit var locationChecker: LocationChecker
+
     private var locationManager: LocationManager? = null
 
     private var map: GoogleMap? = null
@@ -126,10 +129,10 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     @SuppressLint("MissingPermission")
     override fun centerMapOnMyLocation() {
-        map?.myLocation?.let { centerMap(it.latitude, it.longitude) }
+        map?.myLocation?.let { onLocationUpdated(it.latitude, it.longitude) }
                 ?: locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 1000F, object : LocationListener {
                     override fun onLocationChanged(location: Location?) {
-                        location?.let { centerMap(it.latitude, it.longitude) }
+                        location?.let { onLocationUpdated(it.latitude, it.longitude) }
                         locationManager?.removeUpdates(this)
                     }
 
@@ -141,8 +144,13 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
                 })
     }
 
+    private fun onLocationUpdated(latitude: Double, longitude: Double) {
+        centerMap(latitude, longitude)
+        presenter.setLocation(latitude, longitude)
+    }
+
     override fun centerMapInDefaultPosition() {
-        val latLng = LatLng(41.3870154, 2.1678584)
+        val latLng = LatLng(DEFAULT_LAT, DEFAULT_LON)
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
         map?.moveCamera(cameraUpdate)
     }
@@ -172,6 +180,10 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
         }
     }
 
+    override fun clearMap() {
+        map?.clear()
+    }
+
     //endregion_View
 
     @SuppressLint("MissingPermission")
@@ -188,7 +200,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
     }
 
 
-interface OnFragmentInteractionListener {
-    fun onFragmentInteraction(uri: Uri)
-}
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(uri: Uri)
+    }
 }

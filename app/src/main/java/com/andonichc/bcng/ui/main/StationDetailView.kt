@@ -3,7 +3,9 @@ package com.andonichc.bcng.ui.main
 import android.content.Context
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.andonichc.bcng.R
 import com.andonichc.bcng.domain.model.TYPE_ELECTRIC
 import com.andonichc.bcng.presentation.model.StationPresentationModel
@@ -32,6 +34,7 @@ class StationDetailView : FrameLayout {
         tvTitle.text = item.name
         tvBikes.text = item.bikes
         tvSlots.text = item.slots
+        tvDistance.text = item.distance
 
         bindType(item.type)
     }

@@ -1,6 +1,8 @@
 package com.andonichc.bcng.util
 
+import android.content.Context
 import android.support.annotation.DrawableRes
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 
@@ -17,4 +19,11 @@ fun View.visible() {
 
 fun View.gone() {
     this.visibility = View.GONE
+}
+
+fun Int.toDp(context: Context): Int {
+    val resources = context.resources
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            resources.displayMetrics).toInt()
 }

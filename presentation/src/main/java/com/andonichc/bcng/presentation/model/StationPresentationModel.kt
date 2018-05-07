@@ -8,4 +8,5 @@ data class StationPresentationModel(val id: Int,
                                     val slots: String,
                                     val bikes: String,
                                     val operative: Boolean,
-                                    val status: Int)
+                                    val status: Int,
+                                    val distance: String)

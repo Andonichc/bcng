@@ -14,11 +14,14 @@ class LocationChecker(val fragment: Fragment) {
         const val LOCATION_PERMISSION_REQUEST = 1001
     }
 
-    var onSuccessCallback: (() -> Unit)? = null
+    private var onSuccessCallback: (() -> Unit)? = null
 
-    fun check(onSuccess: (() -> Unit)?) {
+    private var onErrorCallback: (() -> Unit)? = null
+
+    fun check(onSuccess: (() -> Unit)?, onError: (() -> Unit)? = null) {
 
         onSuccessCallback = onSuccess
+        onErrorCallback = onError
 
         if (ContextCompat.checkSelfPermission(fragment.activity,
                         PERMISSION)
