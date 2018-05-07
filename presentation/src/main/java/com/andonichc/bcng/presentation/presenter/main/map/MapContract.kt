@@ -22,5 +22,4 @@ interface MapPresenter : BasePresenter {
     fun setLocation(lat: Double, lon: Double)
     fun onMyLocationButtonClicked()
     fun onMarkerClicked(id: String)
-    fun onLocationNotAvailable()
 }

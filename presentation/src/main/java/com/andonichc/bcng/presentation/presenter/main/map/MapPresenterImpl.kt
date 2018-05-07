@@ -35,9 +35,6 @@ class MapPresenterImpl(view: MapView,
         }
     }
 
-    override fun onLocationNotAvailable() {
-    }
-
     private fun getStations() {
         getStationsUseCase.execute()
                 .map(mapper::map)

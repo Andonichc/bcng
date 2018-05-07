@@ -17,6 +17,7 @@ ext {
     mockito = '2.13.0'
     hamcrest = '1.3'
     okHttp = '3.9.1'
+    fabButtons = '1.6.4'
 
 
 
@@ -59,7 +60,10 @@ ext {
             retrofitRxJavaAdapter   : "com.squareup.retrofit2:adapter-rxjava2:$retrofit",
 
             //OkHttp
-            okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttp"
+            okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttp",
+
+            //Fab
+            fabButtons: "com.github.clans:fab:$fabButtons"
     ]
 
     testLibraries = [

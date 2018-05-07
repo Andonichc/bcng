@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.andonichc.bcng.R
 import com.andonichc.bcng.presentation.model.StationPresentationModel
+import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LAT
+import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LON
 import com.andonichc.bcng.presentation.presenter.main.map.MapPresenter
 import com.andonichc.bcng.presentation.presenter.main.map.MapView
 import com.andonichc.bcng.ui.base.BaseFragment
@@ -122,11 +124,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     //region_View
     override fun requestLocationPermission() {
-        locationChecker.check(onSuccess = this::enableLocation, onError = this::onLocationNotAvailable)
-    }
-
-    private fun onLocationNotAvailable() {
-        presenter.onLocationNotAvailable()
+        locationChecker.check(onSuccess = this::enableLocation)
     }
 
     @SuppressLint("MissingPermission")
@@ -152,7 +150,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
     }
 
     override fun centerMapInDefaultPosition() {
-        val latLng = LatLng(41.3870154, 2.1678584)
+        val latLng = LatLng(DEFAULT_LAT, DEFAULT_LON)
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
         map?.moveCamera(cameraUpdate)
     }
@@ -202,7 +200,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
     }
 
 
-interface OnFragmentInteractionListener {
-    fun onFragmentInteraction(uri: Uri)
-}
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(uri: Uri)
+    }
 }
