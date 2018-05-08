@@ -4,8 +4,6 @@ import com.andonichc.bcng.BcngApplication
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
-import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
@@ -13,7 +11,8 @@ import javax.inject.Singleton
     AppModule::class,
     ActivityBuilder::class,
     AndroidInjectionModule::class,
-    NetModule::class
+    NetModule::class,
+    DbModule::class
 ])
 interface AppComponent {
 

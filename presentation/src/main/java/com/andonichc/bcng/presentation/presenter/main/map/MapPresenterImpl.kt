@@ -63,5 +63,4 @@ class MapPresenterImpl(view: MapView,
             }, {
                 view.showErrorState()
             })
-
 }

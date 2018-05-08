@@ -44,8 +44,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toTopOf="@+id/detailView"
         app:layout_constraintEnd_toEndOf="@+id/mapView"
         app:backgroundTint="@color/red"
-        app:srcCompat="@drawable/ic_favorite_border"
+        app:menu_icon="@drawable/ic_favorite_border"
         android:tint="@color/white"/>
 
 </android.support.constraint.ConstraintLayout>

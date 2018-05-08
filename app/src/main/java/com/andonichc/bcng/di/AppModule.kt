@@ -2,6 +2,7 @@ package com.andonichc.bcng.di
 
 import android.content.Context
 import com.andonichc.bcng.BcngApplication
+import com.andonichc.bcng.data.dao.FavoritesDataBase
 import com.andonichc.bcng.domain.AppSchedulers
 import dagger.Module
 import dagger.Provides
