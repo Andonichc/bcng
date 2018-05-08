@@ -4,6 +4,7 @@ import com.andonichc.bcng.domain.usecase.GetStationsUseCase
 import com.andonichc.bcng.presentation.mapper.StationPresentationMapper
 import com.andonichc.bcng.presentation.model.StationPresentationModel
 import com.andonichc.bcng.presentation.presenter.base.BasePresenterImpl
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.internal.observers.ConsumerSingleObserver
 
 
@@ -13,6 +14,7 @@ class MapPresenterImpl(view: MapView,
         BasePresenterImpl<MapView>(view), MapPresenter {
 
     private val markerStations = hashMapOf<String, StationPresentationModel>()
+    private val disposables: CompositeDisposable = CompositeDisposable()
 
     override fun onMapReady() {
         view.centerMapInDefaultPosition()
@@ -47,10 +49,13 @@ class MapPresenterImpl(view: MapView,
                 .subscribe(consumer)
     }
 
+    override fun onStop() {
+        disposables.dispose()
+    }
 
     private val consumer: ConsumerSingleObserver<List<StationPresentationModel>>
-        get() =
-            ConsumerSingleObserver({
+        get() {
+            val consumer = ConsumerSingleObserver<List<StationPresentationModel>>({
                 markerStations.clear()
                 view.clearMap()
                 it.forEach { station ->
@@ -63,4 +68,8 @@ class MapPresenterImpl(view: MapView,
             }, {
                 view.showErrorState()
             })
+
+            disposables.add(consumer)
+            return consumer
+        }
 }

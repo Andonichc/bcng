@@ -4,6 +4,7 @@ import com.andonichc.bcng.domain.usecase.GetStationsUseCase
 import com.andonichc.bcng.presentation.mapper.StationPresentationMapper
 import com.andonichc.bcng.presentation.model.StationPresentationModel
 import com.andonichc.bcng.presentation.presenter.base.BasePresenterImpl
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.internal.observers.ConsumerSingleObserver
 
 
@@ -11,6 +12,8 @@ class ListPresenterImpl(view: ListView,
                         private val getStationsUseCase: GetStationsUseCase,
                         private val mapper: StationPresentationMapper)
     : BasePresenterImpl<ListView>(view), ListPresenter {
+
+    private val disposables: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate() {
         getStations()
@@ -37,11 +40,17 @@ class ListPresenterImpl(view: ListView,
                 .subscribe(consumer)
     }
 
+    override fun onStop() {
+        disposables.dispose()
+    }
 
     private val consumer: ConsumerSingleObserver<List<StationPresentationModel>>
-        get() =
-            ConsumerSingleObserver(view::showStations,
+        get() {
+            val consumer = ConsumerSingleObserver(view::showStations,
                     {
-                view.showErrorState()
-            })
+                        view.showErrorState()
+                    })
+            disposables.add(consumer)
+            return consumer
+        }
 }

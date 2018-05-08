@@ -29,6 +29,11 @@ abstract class BaseFragment<T : BasePresenter> : Fragment(), BaseView {
         presenter.onCreate()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onStop()
+    }
+
     override fun showErrorState() {
         baseActivity?.showErrorState()
     }
