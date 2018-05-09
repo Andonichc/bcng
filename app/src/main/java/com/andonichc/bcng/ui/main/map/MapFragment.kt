@@ -2,22 +2,17 @@ package com.andonichc.bcng.ui.main.map
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.andonichc.bcng.R
+import com.andonichc.bcng.presentation.model.LocationModel
 import com.andonichc.bcng.presentation.model.StationPresentationModel
-import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LAT
-import com.andonichc.bcng.presentation.presenter.main.map.DEFAULT_LON
+import com.andonichc.bcng.presentation.presenter.main.LocationHandler
 import com.andonichc.bcng.presentation.presenter.main.map.MapPresenter
 import com.andonichc.bcng.presentation.presenter.main.map.MapView
 import com.andonichc.bcng.ui.base.BaseFragment
-import com.andonichc.bcng.util.LocationChecker
 import com.andonichc.bcng.util.getMarker
 import com.andonichc.bcng.util.gone
 import com.andonichc.bcng.util.visible
@@ -27,19 +22,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
-import javax.inject.Inject
 
 
 class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
-    @Inject
-    lateinit var locationChecker: LocationChecker
-
-    private var locationManager: LocationManager? = null
-
     private var map: GoogleMap? = null
 
-    private var mListener: OnFragmentInteractionListener? = null
+    private var locationHandler: LocationHandler? = null
 
     companion object {
         fun createInstance() =
@@ -62,7 +51,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
         mapView.getMapAsync {
             map = it
             presenter.onMapReady()
-            setMapperListeners()
+            configureMap()
         }
 
         locationFab.setOnClickListener {
@@ -70,9 +59,13 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
                 presenter.onMyLocationButtonClicked()
             }
         }
+
+        refreshFab.setOnClickListener {
+            presenter.onRefresh()
+        }
     }
 
-    private fun setMapperListeners() {
+    private fun configureMap() {
         map?.setOnMarkerClickListener {
             presenter.onMarkerClicked(it.id)
             false
@@ -80,10 +73,19 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
         map?.setOnMapClickListener {
             detailView.gone()
         }
+
+        map?.uiSettings?.run {
+            isMyLocationButtonEnabled = false
+            isZoomControlsEnabled = false
+            isMapToolbarEnabled = false
+        }
     }
 
-    private fun centerMap(lat: Double, lon: Double) {
-        centerMapWithZoom(lat, lon, 16f)
+    override fun centerMap(location: LocationModel, zoom: Float) {
+        location.run {
+            centerMapWithZoom(latitude, longitude, zoom)
+
+        }
     }
 
     override fun onResume() {
@@ -103,8 +105,8 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
+        if (context is LocationHandler) {
+            locationHandler = context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
@@ -112,47 +114,14 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        locationChecker.onRequestPermissionResult(requestCode, grantResults)
+        locationHandler = null
     }
 
     //endregion_Fragment
 
     //region_View
     override fun requestLocationPermission() {
-        locationChecker.check(onSuccess = this::enableLocation)
-    }
 
-    @SuppressLint("MissingPermission")
-    override fun centerMapOnMyLocation() {
-        map?.myLocation?.let { onLocationUpdated(it.latitude, it.longitude) }
-                ?: locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 1000F, object : LocationListener {
-                    override fun onLocationChanged(location: Location?) {
-                        location?.let { onLocationUpdated(it.latitude, it.longitude) }
-                        locationManager?.removeUpdates(this)
-                    }
-
-                    override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-
-                    override fun onProviderEnabled(p0: String?) {}
-
-                    override fun onProviderDisabled(p0: String?) {}
-                })
-    }
-
-    private fun onLocationUpdated(latitude: Double, longitude: Double) {
-        centerMap(latitude, longitude)
-        presenter.setLocation(latitude, longitude)
-    }
-
-    override fun centerMapInDefaultPosition() {
-        val latLng = LatLng(DEFAULT_LAT, DEFAULT_LON)
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 13f)
-        map?.moveCamera(cameraUpdate)
     }
 
     override fun addMarker(station: StationPresentationModel): String? =
@@ -184,23 +153,27 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView {
         map?.clear()
     }
 
+    override fun getLastKnownLocation(): LocationModel =
+            locationHandler?.getLastKnownLocation() ?: LocationModel()
+
+    override fun isLocationPermissionGranted(): Boolean = locationHandler?.isLocationPermissionGranted()
+            ?: false
+
     //endregion_View
 
     @SuppressLint("MissingPermission")
-    private fun enableLocation() {
+    override fun enableLocation() {
         map?.isMyLocationEnabled = true
-        map?.uiSettings?.run {
-            isMyLocationButtonEnabled = false
-            isZoomControlsEnabled = false
-            isMapToolbarEnabled = false
-        }
-        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationFab.visibility = View.VISIBLE
-        centerMapOnMyLocation()
+        locationFab.visible()
+    }
+
+    override fun onLocationUpdated(location: LocationModel) {
+        presenter.setLocation(location)
+    }
+
+    override fun onLocationPermissionGranted() {
+        enableLocation()
     }
 
 
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(uri: Uri)
-    }
 }

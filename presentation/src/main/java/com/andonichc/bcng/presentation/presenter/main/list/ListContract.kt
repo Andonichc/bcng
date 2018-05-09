@@ -1,16 +1,20 @@
 package com.andonichc.bcng.presentation.presenter.main.list
 
+import com.andonichc.bcng.presentation.model.LocationModel
 import com.andonichc.bcng.presentation.model.StationPresentationModel
 import com.andonichc.bcng.presentation.presenter.base.BasePresenter
 import com.andonichc.bcng.presentation.presenter.base.BaseView
+import com.andonichc.bcng.presentation.presenter.main.LocationAwareView
 
 
-interface ListView: BaseView {
+interface ListView: BaseView, LocationAwareView {
     fun showStations(stations: List<StationPresentationModel>)
-    fun requestLocationPermission()
+    fun getLastKnownLocation(): LocationModel
+    fun isLocationPermissionGranted(): Boolean
 }
 
 interface ListPresenter: BasePresenter {
     fun onRefresh()
-    fun setLocation(latitude: Double, longitude: Double)
+    fun setLocation(location: LocationModel)
+    fun onLocationPermissionGranted()
 }

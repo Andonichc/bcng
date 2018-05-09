@@ -1,7 +1,7 @@
 package com.andonichc.bcng.domain.model
 
 
-class FavoriteModel(
+data class FavoriteModel(
         val id: Int,
         val name: String,
         val icon: String,

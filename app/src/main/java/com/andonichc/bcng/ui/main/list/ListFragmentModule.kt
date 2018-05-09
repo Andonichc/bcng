@@ -22,8 +22,4 @@ class ListFragmentModule {
                              getStationsUseCase: GetStationsUseCase,
                              mapper: StationPresentationMapper): ListPresenter =
             ListPresenterImpl(view, getStationsUseCase, mapper)
-
-    @Provides
-    fun providesLocationChecker(mapFragment: ListFragment): LocationChecker =
-            LocationChecker(mapFragment)
 }

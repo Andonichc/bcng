@@ -11,13 +11,13 @@ class GetStationsUseCase
 @Inject constructor(private val bikeRepository: BikeRepository,
                     private val schedulers: AppSchedulers) {
 
-    fun execute(): Single<List<StationModel>> =
-            bikeRepository.getBikes()
+    fun execute(forceRefresh: Boolean = false): Single<List<StationModel>> =
+            bikeRepository.getBikes(forceRefresh)
                     .observeOn(schedulers.main)
                     .subscribeOn(schedulers.io)
 
-    fun execute(lat: Double, lon: Double): Single<List<StationModel>> =
-            execute().map {
+    fun execute(lat: Double, lon: Double, forceRefresh: Boolean = false): Single<List<StationModel>> =
+            execute(forceRefresh).map {
                         orderByProximity(it, lat, lon)
                     }
 

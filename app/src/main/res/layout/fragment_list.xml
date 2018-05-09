@@ -6,11 +6,17 @@
     android:layout_height="match_parent"
     tools:context="com.andonichc.bcng.ui.main.map.MapFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srlList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/view_station_detail"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/view_station_detail" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

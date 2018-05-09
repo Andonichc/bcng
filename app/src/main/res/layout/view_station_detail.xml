@@ -35,7 +35,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tvDistance"
-                app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+                app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -76,7 +76,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnFavorite"
+                app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
                 tools:drawableEnd="@drawable/ic_slots"
                 tools:text="1" />
 

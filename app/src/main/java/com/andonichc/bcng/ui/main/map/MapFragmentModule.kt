@@ -22,8 +22,4 @@ class MapFragmentModule {
                              getStationsUseCase: GetStationsUseCase,
                              mapper: StationPresentationMapper): MapPresenter =
             MapPresenterImpl(view, getStationsUseCase, mapper)
-
-    @Provides
-    fun providesLocationChecker(mapFragment: MapFragment): LocationChecker =
-            LocationChecker(mapFragment)
 }
