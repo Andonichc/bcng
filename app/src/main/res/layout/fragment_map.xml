@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toTopOf="@+id/detailView"
         app:layout_constraintEnd_toEndOf="@+id/mapView"
         app:backgroundTint="@color/red"
-        app:menu_icon="@drawable/ic_favorite_border"
+        app:menu_icon="@drawable/ic_favorite_border_white"
         android:tint="@color/white"/>
 
 </android.support.constraint.ConstraintLayout>

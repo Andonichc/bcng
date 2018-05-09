@@ -24,6 +24,6 @@
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_favorite_border" />
+        app:srcCompat="@drawable/ic_favorite_border_white" />
 
 </android.support.constraint.ConstraintLayout>

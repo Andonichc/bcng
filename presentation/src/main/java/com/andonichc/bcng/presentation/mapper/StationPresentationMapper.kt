@@ -18,7 +18,9 @@ class StationPresentationMapper
                     bikes = from.bikes.toString(),
                     operative = from.operative,
                     status = from.status,
-                    distance = mapDistance(from.distance)
+                    distance = mapDistance(from.distance),
+                    favoriteId = from.favoriteId,
+                    favoriteIcon = from.favoriteIcon
             )
 
     private fun mapDistance(distance: Int): String {

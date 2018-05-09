@@ -19,4 +19,6 @@ data class StationModel(val id: Int,
                         val bikes: Int,
                         val operative: Boolean,
                         val status: Int,
-                        var distance: Int = -1)
+                        var distance: Int = -1,
+                        var favoriteId: Int = -1,
+                        var favoriteIcon: String? = null)
