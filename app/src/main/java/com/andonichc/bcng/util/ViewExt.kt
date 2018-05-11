@@ -1,9 +1,13 @@
 package com.andonichc.bcng.util
 
 import android.content.Context
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
+import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 
 
@@ -19,6 +23,10 @@ fun View.visible() {
 
 fun View.gone() {
     this.visibility = View.GONE
+}
+
+fun ImageView.setTint(@ColorRes color: Int) {
+    setColorFilter(ContextCompat.getColor(context, color), android.graphics.PorterDuff.Mode.MULTIPLY);
 }
 
 fun Int.toDp(context: Context): Int {

@@ -31,7 +31,7 @@ dependencies {
 
     implementation libraries.room
     implementation libraries.roomRxJava
-    annotationProcessor libraries.roomCompiler
+    kapt libraries.roomCompiler
 
 
     testImplementation testLibraries.mockito

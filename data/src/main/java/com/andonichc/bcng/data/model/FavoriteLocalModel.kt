@@ -7,10 +7,10 @@ import android.arch.persistence.room.PrimaryKey
 @Entity(tableName = "favorite")
 data class FavoriteLocalModel(
         @PrimaryKey(autoGenerate = true)
-        val id: Int,
+        var id: Int = -1,
         @ColumnInfo(name = "name")
-        val name: String,
+        var name: String = "",
         @ColumnInfo(name = "icon")
-        val icon: String,
+        var icon: String = "",
         @ColumnInfo(name="stationsIds")
-        val stationsIds: String)
+        var stationsIds: String = "")

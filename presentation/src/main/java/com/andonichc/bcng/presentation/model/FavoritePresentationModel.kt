@@ -10,4 +10,4 @@ data class FavoritePresentationModel(
         val id: Int,
         val name: String,
         val icon: String,
-        val stationsIds: List<Int>)
+        val stationsIds: MutableList<Int>)

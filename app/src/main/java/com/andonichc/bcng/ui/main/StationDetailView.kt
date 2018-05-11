@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.view_station_detail.view.*
 
 class StationDetailView : FrameLayout {
 
-    private val favoriteListener: FavoriteListener? = null
+    var favoriteListener: FavoriteListener? = null
 
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = -1) :

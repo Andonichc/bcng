@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.andonichc.bcng.data.model.FavoriteLocalModel
+import io.reactivex.Completable
 import io.reactivex.Single
 
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    tools:context="com.andonichc.bcng.ui.main.favorite.FavoriteSelectDialog">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_to_favorites"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvFavorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="100dp"
+        android:layout_marginTop="@dimen/medium_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:maxHeight="250dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:text="@string/add_new"
+        app:layout_constraintTop_toBottomOf="@id/rvFavorites"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@android:color/transparent"/>
+
+
+</android.support.constraint.ConstraintLayout>

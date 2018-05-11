@@ -1,6 +1,9 @@
 package com.andonichc.bcng.presentation.presenter.main.map
 
+import com.andonichc.bcng.domain.usecase.AddFavoriteUseCase
 import com.andonichc.bcng.domain.usecase.GetStationsUseCase
+import com.andonichc.bcng.presentation.mapper.FavoriteDomainMapper
+import com.andonichc.bcng.presentation.mapper.FavoritePresentationMapper
 import com.andonichc.bcng.presentation.mapper.StationPresentationMapper
 import com.andonichc.bcng.presentation.model.FavoritePresentationModel
 import com.andonichc.bcng.presentation.model.LocationModel
@@ -12,7 +15,10 @@ import io.reactivex.internal.observers.ConsumerSingleObserver
 
 class MapPresenterImpl(view: MapView,
                        private val getStationsUseCase: GetStationsUseCase,
-                       private val mapper: StationPresentationMapper) :
+                       private val addFavoriteUseCase: AddFavoriteUseCase,
+                       private val stationsMapper: StationPresentationMapper,
+                       private val favoritesMapper: FavoritePresentationMapper,
+                       private val favoritesDomainMapper: FavoriteDomainMapper) :
         BasePresenterImpl<MapView>(view), MapPresenter {
 
     companion object {
@@ -22,6 +28,7 @@ class MapPresenterImpl(view: MapView,
     private val markerStations = hashMapOf<String, StationPresentationModel>()
     private val disposables: CompositeDisposable = CompositeDisposable()
     private var favorites: List<FavoritePresentationModel> = emptyList()
+    private var selectedStation: StationPresentationModel? = null
     private val lastKnownLocation: LocationModel
         get() = view.getLastKnownLocation()
     private val isLocationPermissionGranted: Boolean
@@ -61,6 +68,7 @@ class MapPresenterImpl(view: MapView,
     override fun onMarkerClicked(id: String) {
         markerStations[id]?.let {
             view.showDetailView(it)
+            selectedStation = it
         }
     }
 
@@ -74,14 +82,14 @@ class MapPresenterImpl(view: MapView,
 
     private fun getStations(forceRefresh: Boolean = false) {
         getStationsUseCase.execute(forceRefresh)
-                .map(mapper::map)
+                .map(stationsMapper::map)
                 .subscribe(consumer)
     }
 
     private fun getStations(locationModel: LocationModel, forceRefresh: Boolean = false) {
         locationModel.run {
             getStationsUseCase.execute(latitude, longitude, forceRefresh)
-                    .map(mapper::map)
+                    .map(stationsMapper::map)
                     .subscribe(consumer)
         }
     }
@@ -89,6 +97,30 @@ class MapPresenterImpl(view: MapView,
     override fun onStop() {
         disposables.dispose()
     }
+
+    //region favorite
+    override fun onItemFavorited() {
+        view.showFavoriteSelectionDialog(favorites)
+    }
+
+    override fun onItemUnFavorited() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAddFavorite() {
+        view.showAddFavoriteDialog()
+    }
+
+    override fun onItemAddedToFavorite(favorite: FavoritePresentationModel) {
+        val selectedStation = selectedStation ?: return
+        favorite.stationsIds.add(selectedStation.id)
+        addFavoriteUseCase
+                .execute(favoritesDomainMapper.map(favorite))
+                .subscribe {
+                    getStations(lastKnownLocation)
+                }
+    }
+    //endregion
 
     private val consumer: ConsumerSingleObserver<List<StationPresentationModel>>
         get() {
