@@ -11,11 +11,18 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.andonichc.bcng"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
+
+        def properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+        resValue "string", "maps_api_key", properties.getProperty("maps_api_key", "")
     }
     buildTypes {
         release {
@@ -40,7 +47,11 @@ dependencies {
     implementation libraries.constraintLayout
     implementation libraries.supportDesign
 
+    //Play Services
+    implementation libraries.googleMaps
+
     //Dagger
+    implementation 'com.android.support:support-v4:27.1.1'
     kapt libraries.daggerCompiler
     kapt libraries.daggerAndroidCompiler
     implementation libraries.dagger
@@ -48,6 +59,9 @@ dependencies {
 
     //Rx
     implementation libraries.rxAndroid
+
+    //FabButtons
+    implementation libraries.fabButtons
 
     //Test
     androidTestImplementation testLibraries.jUnit
