@@ -18,6 +18,7 @@ ext {
     hamcrest = '1.3'
     okHttp = '3.9.1'
     fabButtons = '1.6.4'
+    room = '1.0.0'
 
 
 
@@ -63,7 +64,13 @@ ext {
             okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttp",
 
             //Fab
-            fabButtons: "com.github.clans:fab:$fabButtons"
+            fabButtons: "com.github.clans:fab:$fabButtons",
+
+            //Room
+            room: "android.arch.persistence.room:runtime:$room",
+            roomCompiler: "android.arch.persistence.room:compiler:$room",
+            roomRxJava: "android.arch.persistence.room:rxjava2:$room"
+
     ]
 
     testLibraries = [

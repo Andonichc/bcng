@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import com.andonichc.bcng.R
 import com.andonichc.bcng.presentation.model.StationPresentationModel
@@ -13,7 +12,7 @@ import com.andonichc.bcng.util.toDp
 import kotlinx.android.synthetic.main.view_station_detail.view.*
 
 
-class StationsAdapter : RecyclerView.Adapter<StationsAdapter.StationViewHolder>() {
+abstract class StationsAdapter : RecyclerView.Adapter<StationsAdapter.StationViewHolder>() {
 
     private val items: MutableList<StationPresentationModel> = mutableListOf()
 
@@ -42,10 +41,30 @@ class StationsAdapter : RecyclerView.Adapter<StationsAdapter.StationViewHolder>(
 
     }
 
-    inner class StationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    abstract fun onFavorited(station: StationPresentationModel)
+    abstract fun onUnfavorited(station: StationPresentationModel)
+
+    inner class StationViewHolder(view: View) : RecyclerView.ViewHolder(view), StationDetailView.FavoriteListener {
+        var item: StationPresentationModel? = null
 
         fun bind(station: StationPresentationModel) {
-            (itemView as? StationDetailView)?.bind(station)
+            item = station
+            (itemView as? StationDetailView)?.run {
+                bind(station)
+                favoriteListener = this@StationViewHolder
+            }
+        }
+
+        override fun onFavorited() {
+            item?.let {
+                onFavorited(it)
+            }
+        }
+
+        override fun onUnfavorited() {
+            item?.let {
+                onUnfavorited(it)
+            }
         }
     }
 }

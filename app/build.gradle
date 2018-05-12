@@ -60,6 +60,9 @@ dependencies {
     //Rx
     implementation libraries.rxAndroid
 
+    //FabButtons
+    implementation libraries.fabButtons
+
     //Test
     androidTestImplementation testLibraries.jUnit
     androidTestImplementation testLibraries.testRunner

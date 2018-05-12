@@ -1,39 +1,46 @@
 package com.andonichc.bcng.ui.main.list
 
-import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.andonichc.bcng.R
+import com.andonichc.bcng.presentation.model.FavoritePresentationModel
+import com.andonichc.bcng.presentation.model.LocationModel
 import com.andonichc.bcng.presentation.model.StationPresentationModel
+import com.andonichc.bcng.presentation.presenter.main.LocationHandler
 import com.andonichc.bcng.presentation.presenter.main.list.ListPresenter
 import com.andonichc.bcng.presentation.presenter.main.list.ListView
 import com.andonichc.bcng.ui.base.BaseFragment
-import com.andonichc.bcng.util.LocationChecker
+import com.andonichc.bcng.ui.main.favorite.AddFavoriteDialog
+import com.andonichc.bcng.ui.main.favorite.FavoriteSelectDialog
+import com.andonichc.bcng.ui.main.favorite.FavoriteSelectedListener
+import com.andonichc.bcng.util.getWhiteResourceFromType
+import com.github.clans.fab.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_list.*
-import javax.inject.Inject
 
 
-class ListFragment : BaseFragment<ListPresenter>(), ListView {
+class ListFragment : BaseFragment<ListPresenter>(), ListView, SwipeRefreshLayout.OnRefreshListener,
+        FavoriteSelectedListener,
+        FavoriteSelectDialog.FavoriteAddListener {
 
-    @Inject
-    lateinit var locationChecker: LocationChecker
-
-    private var locationManager: LocationManager? = null
 
     companion object {
+        private const val FAVORITE_SELECTION = "favorite_selection"
+        private const val FAVORITE_ADD = "favorite_add"
+
         fun createInstance() =
                 ListFragment()
     }
 
-    //region_Fragment
+    private var locationHandler: LocationHandler? = null
+
+    //region Fragment
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_list, container, false)
@@ -42,43 +49,131 @@ class ListFragment : BaseFragment<ListPresenter>(), ListView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         rvList.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
-        rvList.adapter = StationsAdapter()
+        rvList.adapter = object : StationsAdapter() {
+            override fun onFavorited(station: StationPresentationModel) {
+                presenter.onItemFavorited(station)
+            }
+
+            override fun onUnfavorited(station: StationPresentationModel) {
+                presenter.onItemUnFavorited(station)
+            }
+        }
+        srlList.isRefreshing = true
+        srlList.setOnRefreshListener(this)
+
+        fabMenu.setOnMenuToggleListener { opened ->
+            presenter.onMenuToggle(opened)
+            if (opened) {
+                fabMenu.menuIconView.setImageResource(R.drawable.fab_add)
+            } else {
+                fabMenu.menuIconView.setImageResource(R.drawable.ic_favorite_border_white_36dp)
+            }
+        }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        locationChecker.onRequestPermissionResult(requestCode, grantResults)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is LocationHandler) {
+            locationHandler = context
+        } else {
+            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        locationHandler = null
     }
     //endregion
 
-    //region_View
+    //region View
     override fun showStations(stations: List<StationPresentationModel>) {
+        srlList.isRefreshing = false
         (rvList.adapter as StationsAdapter).setItems(stations)
     }
 
-    override fun requestLocationPermission() {
-        locationChecker.check(onSuccess = this::enableLocation)
-    }
+    override fun getLastKnownLocation(): LocationModel =
+            locationHandler?.getLastKnownLocation() ?: LocationModel()
+
+    override fun isLocationPermissionGranted(): Boolean = locationHandler?.isLocationPermissionGranted()
+            ?: false
+
 
     //endregion
 
-
-    @SuppressLint("MissingPermission")
-   private fun enableLocation() {
-        locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 1000F, object : LocationListener {
-            override fun onLocationChanged(location: Location?) {
-                location?.let { presenter.setLocation(it.latitude, it.longitude) }
-                locationManager?.removeUpdates(this)
-            }
-
-            override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {}
-
-            override fun onProviderEnabled(p0: String?) {}
-
-            override fun onProviderDisabled(p0: String?) {}
-        })
+    //region LocationAwareView
+    override fun onLocationUpdated(location: LocationModel) {
+        presenter.setLocation(location)
     }
+
+
+    override fun onLocationPermissionGranted() {
+        presenter.onLocationPermissionGranted()
+    }
+    //endregion
+
+    //region OnRefreshListener
+    override fun onRefresh() {
+        presenter.onRefresh()
+        srlList.isRefreshing = true
+    }
+    //endregion
+
+    //region Favorites
+    override fun onFavoriteSelected(favorite: FavoritePresentationModel) {
+        presenter.onItemAddedToFavorite(favorite)
+    }
+
+    override fun onFavoriteAdd() {
+        presenter.onAddFavorite()
+    }
+
+    override fun showAddFavoriteDialog() {
+        val dialog = AddFavoriteDialog.newInstance()
+        dialog.show(fragmentManager, FAVORITE_ADD)
+        dialog.favoriteSelectListener = this
+    }
+
+    override fun showFavoriteSelectionDialog(favorites: List<FavoritePresentationModel>) {
+        val dialog = FavoriteSelectDialog.newInstance(favorites)
+        dialog.show(fragmentManager, FAVORITE_SELECTION)
+        dialog.favoriteSelectListener = this
+        dialog.favoriteAddListener = this
+    }
+
+    override fun onShowFavorites(favorites: List<FavoritePresentationModel>) {
+        fabMenu.removeAllMenuButtons()
+        favorites.forEach { favorite ->
+            val button = FloatingActionButton(activity).apply {
+                buttonSize = FloatingActionButton.SIZE_MINI
+                labelText = favorite.name
+                setImageResource(getWhiteResourceFromType(favorite.icon))
+                setOnClickListener {
+                    presenter.onFavoriteSelected(favorite)
+                }
+                setOnLongClickListener {
+                    presenter.onFavoriteLongClick(favorite)
+                    false
+                }
+            }
+            fabMenu.addMenuButton(button)
+        }
+    }
+
+    override fun showDeleteDialog(favorite: FavoritePresentationModel) {
+        AlertDialog.Builder(activity)
+                .setTitle(getString(R.string.delete_dialog_title, favorite.name))
+                .setPositiveButton(R.string.delete, { dialog, _ ->
+                    presenter.onAcceptDeleteFavorite(favorite)
+                    dialog.dismiss()
+                })
+                .setNegativeButton(R.string.cancel, { dialog, _ ->
+                    dialog.dismiss()
+                })
+                .create()
+                .show()
+    }
+    //endregion
 
 
 }

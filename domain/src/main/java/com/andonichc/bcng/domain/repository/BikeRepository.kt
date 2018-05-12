@@ -5,5 +5,5 @@ import io.reactivex.Single
 
 
 interface BikeRepository {
-    fun getBikes(): Single<List<StationModel>>
+    fun getBikes(forceRefresh: Boolean = false): Single<List<StationModel>>
 }

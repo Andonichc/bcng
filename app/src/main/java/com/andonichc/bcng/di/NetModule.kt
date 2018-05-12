@@ -1,6 +1,7 @@
 package com.andonichc.bcng.di
 
 import com.andonichc.bcng.BuildConfig
+import com.andonichc.bcng.data.cache.StationsMemoryCache
 import com.andonichc.bcng.data.datasource.BikeApiDataSource
 import com.andonichc.bcng.data.mapper.StationApiMapper
 import com.andonichc.bcng.data.service.BikeService
@@ -23,6 +24,7 @@ class NetModule {
 
     @Provides
     @Singleton
-    fun providesBikeRespository(bikeService: BikeService, mapper: StationApiMapper): BikeRepository =
-            BikeApiDataSource(bikeService, mapper)
+    fun providesBikeRespository(bikeService: BikeService, mapper: StationApiMapper,
+                                memoryCache: StationsMemoryCache): BikeRepository =
+            BikeApiDataSource(bikeService, mapper, memoryCache)
 }

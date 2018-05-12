@@ -2,6 +2,7 @@ package com.andonichc.bcng.presentation.mapper
 
 import com.andonichc.bcng.domain.ListMapper
 import com.andonichc.bcng.domain.model.StationModel
+import com.andonichc.bcng.presentation.model.NO_FAVORITE
 import com.andonichc.bcng.presentation.model.StationPresentationModel
 import javax.inject.Inject
 
@@ -18,7 +19,9 @@ class StationPresentationMapper
                     bikes = from.bikes.toString(),
                     operative = from.operative,
                     status = from.status,
-                    distance = mapDistance(from.distance)
+                    distance = mapDistance(from.distance),
+                    favoriteId = from.favoriteId,
+                    favoriteIcon = from.favoriteIcon ?: NO_FAVORITE
             )
 
     private fun mapDistance(distance: Int): String {

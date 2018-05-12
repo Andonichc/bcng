@@ -1,11 +1,15 @@
 package com.andonichc.bcng.ui.main.map
 
+import com.andonichc.bcng.domain.usecase.AddFavoriteUseCase
+import com.andonichc.bcng.domain.usecase.DeleteFavoriteUseCase
+import com.andonichc.bcng.domain.usecase.GetFavoriteUseCase
 import com.andonichc.bcng.domain.usecase.GetStationsUseCase
+import com.andonichc.bcng.presentation.mapper.FavoriteDomainMapper
+import com.andonichc.bcng.presentation.mapper.FavoritePresentationMapper
 import com.andonichc.bcng.presentation.mapper.StationPresentationMapper
 import com.andonichc.bcng.presentation.presenter.main.map.MapPresenter
 import com.andonichc.bcng.presentation.presenter.main.map.MapPresenterImpl
 import com.andonichc.bcng.presentation.presenter.main.map.MapView
-import com.andonichc.bcng.util.LocationChecker
 import dagger.Module
 import dagger.Provides
 
@@ -20,10 +24,12 @@ class MapFragmentModule {
     @Provides
     fun providesMapPresenter(view: MapView,
                              getStationsUseCase: GetStationsUseCase,
-                             mapper: StationPresentationMapper): MapPresenter =
-            MapPresenterImpl(view, getStationsUseCase, mapper)
-
-    @Provides
-    fun providesLocationChecker(mapFragment: MapFragment): LocationChecker =
-            LocationChecker(mapFragment)
+                             addFavoriteUseCase: AddFavoriteUseCase,
+                             mapper: StationPresentationMapper,
+                             favoriteMapper: FavoritePresentationMapper,
+                             favoriteDomainlMapper: FavoriteDomainMapper,
+                             getFavoriteUseCase: GetFavoriteUseCase,
+                             deleteFavoriteUseCase: DeleteFavoriteUseCase): MapPresenter =
+            MapPresenterImpl(view, getStationsUseCase, addFavoriteUseCase, getFavoriteUseCase,
+                    deleteFavoriteUseCase, mapper, favoriteMapper, favoriteDomainlMapper)
 }

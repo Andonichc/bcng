@@ -3,21 +3,24 @@ package com.andonichc.bcng.ui.main
 import android.content.Context
 import android.support.annotation.RequiresApi
 import android.util.AttributeSet
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.andonichc.bcng.R
 import com.andonichc.bcng.domain.model.TYPE_ELECTRIC
 import com.andonichc.bcng.presentation.model.StationPresentationModel
+import com.andonichc.bcng.util.getResourceFromType
 import com.andonichc.bcng.util.setRightDrawable
 import kotlinx.android.synthetic.main.view_station_detail.view.*
 
 
 class StationDetailView : FrameLayout {
 
+    var favoriteListener: FavoriteListener? = null
+
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = -1) :
             super(context, attrs, defStyleAttr)
+
+    private var favoriteId: Int? = null
 
     @RequiresApi(21)
     constructor(context: Context,
@@ -28,6 +31,14 @@ class StationDetailView : FrameLayout {
 
     init {
         inflate(context, R.layout.view_station_detail, this)
+        ivFavorite.setOnClickListener {
+            val favoriteId = favoriteId
+            if (favoriteId == null || favoriteId < 0) {
+                favoriteListener?.onFavorited()
+            } else {
+                favoriteListener?.onUnfavorited()
+            }
+        }
     }
 
     fun bind(item: StationPresentationModel) {
@@ -35,12 +46,14 @@ class StationDetailView : FrameLayout {
         tvBikes.text = item.bikes
         tvSlots.text = item.slots
         tvDistance.text = item.distance
+        favoriteId = item.favoriteId
+        ivFavorite.setImageResource(getResourceFromType(item.favoriteIcon))
 
         bindType(item.type)
     }
 
     private fun bindType(type: Int) {
-        when(type) {
+        when (type) {
             TYPE_ELECTRIC -> {
                 tvBikes.setRightDrawable(R.drawable.ic_bike_electric)
                 tvSlots.setRightDrawable(R.drawable.ic_slots_electric)
@@ -50,5 +63,10 @@ class StationDetailView : FrameLayout {
                 tvSlots.setRightDrawable(R.drawable.ic_slots)
             }
         }
+    }
+
+    interface FavoriteListener {
+        fun onFavorited()
+        fun onUnfavorited()
     }
 }

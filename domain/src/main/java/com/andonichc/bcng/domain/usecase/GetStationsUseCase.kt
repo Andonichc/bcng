@@ -1,25 +1,46 @@
 package com.andonichc.bcng.domain.usecase
 
 import com.andonichc.bcng.domain.AppSchedulers
+import com.andonichc.bcng.domain.model.FavoriteModel
 import com.andonichc.bcng.domain.model.StationModel
 import com.andonichc.bcng.domain.repository.BikeRepository
+import com.andonichc.bcng.domain.repository.FavoriteRepository
+import com.andonichc.bcng.domain.zipper.StationModelZipper
 import io.reactivex.Single
+import io.reactivex.rxkotlin.zipWith
 import javax.inject.Inject
 
 
 class GetStationsUseCase
 @Inject constructor(private val bikeRepository: BikeRepository,
+                    private val favoriteRepository: FavoriteRepository,
+                    private val zipper: StationModelZipper,
                     private val schedulers: AppSchedulers) {
 
-    fun execute(): Single<List<StationModel>> =
-            bikeRepository.getBikes()
-                    .observeOn(schedulers.main)
-                    .subscribeOn(schedulers.io)
+    fun execute(forceRefresh: Boolean = false, favorite: FavoriteModel? = null): Single<List<StationModel>> {
+        var single = bikeRepository.getBikes(forceRefresh).zipWith(favoriteRepository.getFavorites(), zipper::zip)
+                .observeOn(schedulers.main)
+                .subscribeOn(schedulers.io)
 
-    fun execute(lat: Double, lon: Double): Single<List<StationModel>> =
-            execute().map {
-                        orderByProximity(it, lat, lon)
+        if (favorite != null) {
+            single = single.flatMap {
+                val stationsFiltered = mutableListOf<StationModel>()
+                it.forEach {
+                    if (favorite.id == it.favoriteId) {
+                        stationsFiltered.add(it)
                     }
+                }
+                Single.just(stationsFiltered)
+            }
+        }
+        return single
+    }
+
+    fun execute(lat: Double, lon: Double, forceRefresh: Boolean = false, favorite: FavoriteModel? = null)
+            : Single<List<StationModel>> =
+            execute(forceRefresh, favorite).map {
+                orderByProximity(it, lat, lon)
+            }
 
     private fun orderByProximity(list: List<StationModel>, lat: Double, lon: Double): List<StationModel> {
         list.forEach {

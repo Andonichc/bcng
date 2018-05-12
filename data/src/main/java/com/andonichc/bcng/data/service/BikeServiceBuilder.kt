@@ -1,7 +1,5 @@
 package com.andonichc.bcng.data.service
 
-import javax.xml.ws.Service
-
 
 class BikeServiceBuilder : ServiceBuilder<BikeService>() {
 
