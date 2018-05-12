@@ -14,7 +14,7 @@ class FavoriteModelMapper
 
     override fun map(from: FavoriteModel): FavoriteLocalModel =
             FavoriteLocalModel(
-                    id = from.id,
+                    id = if (from.id > 0) from.id else null,
                     name = from.name,
                     icon = from.icon,
                     stationsIds = gson.toJson(from.stationsIds)

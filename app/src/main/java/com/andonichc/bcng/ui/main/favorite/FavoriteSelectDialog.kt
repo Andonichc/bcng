@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.Window
 import com.andonichc.bcng.R
 import com.andonichc.bcng.presentation.model.FavoritePresentationModel
+import com.andonichc.bcng.util.gone
 import com.andonichc.bcng.util.toBundle
 import com.andonichc.bcng.util.toFavoritesList
 import kotlinx.android.synthetic.main.dialog_favorite_select.*
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.dialog_favorite_select.*
 
 class FavoriteSelectDialog : DialogFragment() {
     companion object {
+
         fun newInstance(favorites: List<FavoritePresentationModel>): FavoriteSelectDialog {
             val fragment = FavoriteSelectDialog()
             fragment.arguments = favorites.toBundle()
@@ -31,7 +33,7 @@ class FavoriteSelectDialog : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.toFavoritesList()?.let {
+        arguments.toFavoritesList().let {
             favorites = it
         }
     }
@@ -48,9 +50,9 @@ class FavoriteSelectDialog : DialogFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rvFavorites.run{
+        rvFavorites.run {
             layoutManager = LinearLayoutManager(activity)
-            adapter = object: FavoritesAdapter(favorites) {
+            adapter = object : FavoritesAdapter(favorites) {
                 override fun onFavoriteClicked(item: FavoritePresentationModel) {
                     favoriteSelectListener?.onFavoriteSelected(item)
                     dismiss()
@@ -58,6 +60,7 @@ class FavoriteSelectDialog : DialogFragment() {
             }
         }
 
+        if (favorites.size > 4) btnAdd.gone()
         btnAdd.setOnClickListener {
             favoriteAddListener?.onFavoriteAdd()
             dismiss()

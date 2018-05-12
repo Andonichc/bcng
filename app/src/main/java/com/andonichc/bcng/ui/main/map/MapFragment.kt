@@ -1,6 +1,7 @@
 package com.andonichc.bcng.ui.main.map
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +19,13 @@ import com.andonichc.bcng.ui.main.StationDetailView
 import com.andonichc.bcng.ui.main.favorite.AddFavoriteDialog
 import com.andonichc.bcng.ui.main.favorite.FavoriteSelectDialog
 import com.andonichc.bcng.ui.main.favorite.FavoriteSelectedListener
-import com.andonichc.bcng.util.getMarker
-import com.andonichc.bcng.util.gone
-import com.andonichc.bcng.util.visible
+import com.andonichc.bcng.util.*
+import com.github.clans.fab.FloatingActionButton
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
 
@@ -51,6 +52,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initMapView(savedInstanceState)
         detailView.favoriteListener = this
     }
@@ -73,6 +75,15 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
         refreshFab.setOnClickListener {
             presenter.onRefresh()
         }
+
+        fabMenu.setOnMenuToggleListener { opened ->
+            presenter.onMenuToggle(opened)
+            if (opened) {
+                fabMenu.menuIconView.setImageResource(R.drawable.fab_add)
+            } else {
+                fabMenu.menuIconView.setImageResource(R.drawable.ic_favorite_border_white_36dp)
+            }
+        }
     }
 
     private fun configureMap() {
@@ -81,20 +92,13 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
             false
         }
         map?.setOnMapClickListener {
-            detailView.gone()
+            hideDetailView()
         }
 
         map?.uiSettings?.run {
             isMyLocationButtonEnabled = false
             isZoomControlsEnabled = false
             isMapToolbarEnabled = false
-        }
-    }
-
-    override fun centerMap(location: LocationModel, zoom: Float) {
-        location.run {
-            centerMapWithZoom(latitude, longitude, zoom)
-
         }
     }
 
@@ -133,6 +137,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
     override fun addMarker(station: StationPresentationModel): String? =
             map?.addMarker(
                     MarkerOptions()
+                            .title(station.name)
                             .position(
                                     LatLng(
                                             station.latitude,
@@ -148,11 +153,22 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
         map?.moveCamera(cameraUpdate)
     }
 
+    override fun centerMap(location: LocationModel, zoom: Float) {
+        location.run {
+            centerMapWithZoom(latitude, longitude, zoom)
+
+        }
+    }
+
     override fun showDetailView(station: StationPresentationModel) {
         detailView.run {
             bind(station)
             visible()
         }
+    }
+
+    override fun hideDetailView() {
+        detailView.gone()
     }
 
     override fun clearMap() {
@@ -197,6 +213,50 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
         dialog.favoriteSelectListener = this
         dialog.favoriteAddListener = this
     }
+
+    override fun onShowFavorites(favorites: List<FavoritePresentationModel>) {
+        fabMenu.removeAllMenuButtons()
+        favorites.forEach { favorite ->
+            val button = FloatingActionButton(activity).apply {
+                buttonSize = FloatingActionButton.SIZE_MINI
+                labelText = favorite.name
+                setImageResource(getWhiteResourceFromType(favorite.icon))
+                setOnClickListener {
+                    presenter.onFavoriteSelected(favorite)
+                }
+                setOnLongClickListener {
+                    presenter.onFavoriteLongClick(favorite)
+                    false
+                }
+            }
+            fabMenu.addMenuButton(button)
+        }
+    }
+
+    override fun centerMapOnStations(stations: List<StationPresentationModel>) {
+        val builder = LatLngBounds.Builder()
+        stations.forEach {
+            builder.include(LatLng(it.latitude, it.longitude))
+        }
+
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 60.toDp(activity))
+        map?.animateCamera(cameraUpdate)
+    }
+
+    override fun showDeleteDialog(favorite: FavoritePresentationModel) {
+        AlertDialog.Builder(activity)
+                .setTitle(getString(R.string.delete_dialog_title, favorite.name))
+                .setPositiveButton(R.string.delete, { dialog, _ ->
+                    presenter.onAcceptDeleteFavorite(favorite)
+                    dialog.dismiss()
+                })
+                .setNegativeButton(R.string.cancel, {dialog, _ ->
+                    dialog.dismiss()
+                })
+                .create()
+                .show()
+    }
+
     //endregion
 
     //region favorite selection

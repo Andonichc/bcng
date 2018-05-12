@@ -18,18 +18,18 @@
             tools:listitem="@layout/view_station_detail" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/medium_margin"
-        android:layout_marginBottom="@dimen/medium_margin"
-        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:tint="@color/white"
         app:backgroundTint="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_favorite_border_white" />
+        app:menu_icon="@drawable/ic_favorite_border_white_36dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -10,6 +10,7 @@ dependencies {
 
     //RxJava
     api libraries.rxJava
+    api libraries.rxKotlin
 
     //Inject
     api libraries.javaxInject

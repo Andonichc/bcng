@@ -23,4 +23,10 @@ class FavoritesLocalDataSource
             Completable.fromAction {
                 favoriteDao.insertFavorite(mapper.map(favorite))
             }
+
+    override fun deleteFavorite(favorite: FavoriteModel): Completable =
+        Completable.fromAction {
+            favoriteDao.deleteFavorite(mapper.map(favorite))
+        }
+
 }

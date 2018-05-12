@@ -9,4 +9,6 @@ interface FavoriteRepository {
     fun getFavorites(): Single<List<FavoriteModel>>
 
     fun addFavorite(favorite: FavoriteModel): Completable
+
+    fun deleteFavorite(favorite: FavoriteModel): Completable
 }

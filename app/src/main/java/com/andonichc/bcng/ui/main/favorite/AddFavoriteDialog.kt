@@ -5,15 +5,13 @@ import android.app.Dialog
 import android.app.DialogFragment
 import android.os.Bundle
 import android.support.annotation.ColorRes
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.andonichc.bcng.R
-import com.andonichc.bcng.presentation.model.GYM
-import com.andonichc.bcng.presentation.model.HOME
-import com.andonichc.bcng.presentation.model.SCHOOL
-import com.andonichc.bcng.presentation.model.WORK
+import com.andonichc.bcng.presentation.model.*
 import com.andonichc.bcng.util.setTint
 import kotlinx.android.synthetic.main.dialog_favorite_add.*
 
@@ -88,6 +86,11 @@ class AddFavoriteDialog : DialogFragment(), View.OnClickListener {
     }
 
     private fun onClickAdd() {
-
+        val name = etName.text.toString().trim()
+        if (!name.isEmpty()) {
+            favoriteSelectListener?.onFavoriteSelected(
+                    FavoritePresentationModel(-1, name,selectedIcon, mutableListOf()))
+        }
+        dismiss()
     }
 }
