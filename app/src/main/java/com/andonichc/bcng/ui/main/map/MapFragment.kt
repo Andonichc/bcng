@@ -140,9 +140,6 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
         super.onDetach()
         locationHandler = null
     }
-
-
-
     //endregion_Fragment
 
     //region_View
