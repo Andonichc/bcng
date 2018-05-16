@@ -33,9 +33,10 @@ ext {
             cardView                : "com.android.support:cardview-v7:$supportLibrary",
             supportDesign           : "com.android.support:design:$supportLibrary",
             constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayout",
+            multidex                : "com.android.support:multidex:1.0.1",
 
             //Play Services
-            googleMaps: "com.google.android.gms:play-services-maps:$playServices",
+            googleMaps              : "com.google.android.gms:play-services-maps:$playServices",
 
             //Dagger
             daggerCompiler          : "com.google.dagger:dagger-compiler:$dagger",
@@ -60,12 +61,12 @@ ext {
             okHttpLoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:$okHttp",
 
             //Fab
-            fabButtons: "com.github.clans:fab:$fabButtons",
+            fabButtons              : "com.github.clans:fab:$fabButtons",
 
             //Room
-            room: "android.arch.persistence.room:runtime:$room",
-            roomCompiler: "android.arch.persistence.room:compiler:$room",
-            roomRxJava: "android.arch.persistence.room:rxjava2:$room"
+            room                    : "android.arch.persistence.room:runtime:$room",
+            roomCompiler            : "android.arch.persistence.room:compiler:$room",
+            roomRxJava              : "android.arch.persistence.room:rxjava2:$room"
 
     ]
 

@@ -7,8 +7,6 @@ dependencies {
 
     implementation project(":domain")
 
-    implementation libraries.rxKotlin
-
     testImplementation testLibraries.jUnit
     testImplementation testLibraries.mockito
 }
