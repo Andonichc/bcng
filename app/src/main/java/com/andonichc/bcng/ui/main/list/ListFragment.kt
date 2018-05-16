@@ -1,5 +1,6 @@
 package com.andonichc.bcng.ui.main.list
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -77,6 +78,15 @@ class ListFragment : BaseFragment<ListPresenter>(), ListView, SwipeRefreshLayout
             locationHandler = context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        if (activity is LocationHandler) {
+            locationHandler = activity
+        } else {
+            throw RuntimeException(activity!!.toString() + " must implement OnFragmentInteractionListener")
         }
     }
 

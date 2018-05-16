@@ -1,6 +1,7 @@
 package com.andonichc.bcng.ui.main.map
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -126,11 +127,19 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
         }
     }
 
+    override fun onAttach(activity: Activity?) {
+        super.onAttach(activity)
+        if (activity is LocationHandler) {
+            locationHandler = activity
+        } else {
+            throw RuntimeException(activity!!.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
     override fun onDetach() {
         super.onDetach()
         locationHandler = null
     }
-
     //endregion_Fragment
 
     //region_View
