@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api project(":domain")
+    implementation project(":domain")
 
     implementation libraries.retrofit
     implementation libraries.retrofitGsonConverter
