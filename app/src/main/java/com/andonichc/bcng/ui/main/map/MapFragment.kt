@@ -234,6 +234,7 @@ class MapFragment : BaseFragment<MapPresenter>(), MapView, StationDetailView.Fav
     }
 
     override fun centerMapOnStations(stations: List<StationPresentationModel>) {
+        if (stations.isEmpty()) return
         val builder = LatLngBounds.Builder()
         stations.forEach {
             builder.include(LatLng(it.latitude, it.longitude))
