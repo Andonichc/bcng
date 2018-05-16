@@ -9,4 +9,5 @@
     <string name="delete">eliminar</string>
     <string name="cancel">Cancelar</string>
     <string name="error_generic">Alguna cosa ha ido mal, porfavor pruebalo más tarde!</string>
+    <string name="name">Nombre</string>
 </resources>
