@@ -10,6 +10,8 @@ class StationModelZipper
 @Inject constructor() : Zipper<List<StationModel>, List<FavoriteModel>, List<StationModel>> {
     override fun zip(stations: List<StationModel>, favorites: List<FavoriteModel>): List<StationModel> {
         stations.forEach { station ->
+            station.favoriteId = -1
+            station.favoriteIcon = null
             favorites.forEach foreach@ { favorite ->
                 if (favorite.stationsIds.contains(station.id)) {
                     station.favoriteIcon = favorite.icon
