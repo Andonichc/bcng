@@ -16,7 +16,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
 
@@ -42,7 +41,6 @@ dependencies {
     implementation libraries.kotlin
 
     //Support
-    implementation libraries.multidex
     implementation libraries.appCompat
     implementation libraries.recyclerView
     implementation libraries.cardView
