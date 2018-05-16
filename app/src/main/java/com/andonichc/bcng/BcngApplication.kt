@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.support.annotation.VisibleForTesting
+import android.support.multidex.MultiDex
 import com.andonichc.bcng.di.ActivityInjector
 import com.andonichc.bcng.di.ActivityInjectorImpl
 import com.andonichc.bcng.di.DaggerAppComponent
@@ -21,6 +22,11 @@ class BcngApplication : Application(), HasActivityInjector {
 
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
