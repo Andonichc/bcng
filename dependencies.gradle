@@ -33,7 +33,6 @@ ext {
             cardView                : "com.android.support:cardview-v7:$supportLibrary",
             supportDesign           : "com.android.support:design:$supportLibrary",
             constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayout",
-            multidex                : "com.android.support:multidex:1.0.1",
 
             //Play Services
             googleMaps              : "com.google.android.gms:play-services-maps:$playServices",
