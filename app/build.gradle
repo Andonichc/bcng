@@ -22,6 +22,11 @@ android {
         def properties = new Properties()
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
+        lintOptions {
+            disable 'MissingTranslation'
+            checkReleaseBuilds false
+        }
+
         resValue "string", "maps_api_key", properties.getProperty("maps_api_key", "")
     }
     buildTypes {
