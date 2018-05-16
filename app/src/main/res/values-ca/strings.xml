@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BCNg</string>
+    <string name="action_change_view">Canviar vista</string>
+    <string name="add_to_favorites">Afegir a favorits</string>
+    <string name="add_new">Afegir nou</string>
+    <string name="add">Afegir</string>
+    <string name="delete_dialog_title">Estàs segur que vols eliminar %1$s?</string>
+    <string name="delete">eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="error_generic">Alguna cosa ha anat malament, siusplau prova-ho més tard!</string>
+</resources>
