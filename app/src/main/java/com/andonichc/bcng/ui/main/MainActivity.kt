@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.view.Menu
 import android.view.MenuItem
@@ -78,10 +79,10 @@ class MainActivity : BaseActivity<MainPresenter>(), MainView, LocationHandler {
     private fun changeFragment(item: MenuItem) {
         if (currentFragment is MapFragment) {
             setFragment(listFragment)
-            item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_map, null)
+            item.icon = VectorDrawableCompat.create(resources, R.drawable.ic_map, null);
         } else {
             setFragment(mapFragment)
-            item.icon = ResourcesCompat.getDrawable(resources, R.drawable.ic_list, null)
+            item.icon = VectorDrawableCompat.create(resources, R.drawable.ic_list, null)
         }
     }
 
